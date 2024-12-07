@@ -50,7 +50,6 @@ export class DatabaseSocketHandler {
     }
 
     onOpen() {
-        this.statements.set(-1, this.db.prepare("SELECT * FROM albums WHERE albumId < :id"))
     }
 
     onMessage(msg : IncomingMessage) {
