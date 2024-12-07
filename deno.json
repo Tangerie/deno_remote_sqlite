@@ -1,0 +1,10 @@
+{
+  "tasks": {
+  },
+  "workspace": [
+    "./client",
+    "./server"
+  ],
+  "imports": {
+  }
+}
