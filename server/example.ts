@@ -3,17 +3,16 @@ if (!import.meta.main) {
 }
 
 import { Application, type Context, Router } from "./deps.ts";
-import { SocketServer  } from "./mod.ts";
+import { makeDatabaseSocketHandler } from "./mod.ts";
 
 const app = new Application();
 const port = 8090;
 const router = new Router();
-const server = new SocketServer({
+
+router.get("/socket", (ctx : Context) => makeDatabaseSocketHandler(ctx, {
   readonly: true,
   path: "./exampledb.sqlite3"
-});
-
-router.get("/socket", (ctx : Context) => server.handleConnection(ctx));
+}));
 
 app.use(router.routes());
 app.use(router.allowedMethods());

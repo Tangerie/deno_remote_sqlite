@@ -7,20 +7,12 @@ interface Message {
     payload?: unknown
 }
 
-export class SocketServer {
-    private cfg : DatabaseConfig;
-
-    constructor(cfg : DatabaseConfig) {
-        this.cfg = cfg;
-    }
-
-    public async handleConnection(ctxt : Context) {
-        const socket = await ctxt.upgrade() as WebSocket;
-        const handler = new SocketHandler(socket, this.cfg);
-    }
+export const makeDatabaseSocketHandler = async (ctxt : Context, cfg : DatabaseConfig) => {
+    const socket = await ctxt.upgrade() as WebSocket;
+    return new DatabaseSocketHandler(socket, cfg);
 }
 
-class SocketHandler {
+export class DatabaseSocketHandler {
     private socket : WebSocket;
     private db : Database;
     constructor(socket : WebSocket, cfg : DatabaseConfig) {
