@@ -2,13 +2,16 @@ if (!import.meta.main) {
   throw new Error("This is to be run, not imported")
 }
 
-import { Application, type Context, Router } from "@oak/oak";
+import { Application, type Context, Router } from "./deps.ts";
 import { SocketServer  } from "./mod.ts";
 
 const app = new Application();
-const port = 8080;
+const port = 8090;
 const router = new Router();
-const server = new SocketServer();
+const server = new SocketServer({
+  readonly: true,
+  path: "./exampledb.sqlite3"
+});
 
 router.get("/socket", (ctx : Context) => server.handleConnection(ctx));
 
