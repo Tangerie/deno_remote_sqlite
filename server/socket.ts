@@ -57,7 +57,7 @@ export class DatabaseSocketHandler {
         if(!INCOMING_MESSAGE_TYPES.includes(msg.type)) {
             return this.error(msg.id, "Unknown Message Type");
         }
-        console.log(msg);
+        
         if(msg.type === "prepare") {
             const params = msg.payload as Parameters<Database["prepare"]>;
             const stmt = this.db.prepare(...params);
