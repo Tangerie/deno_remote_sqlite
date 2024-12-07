@@ -1,15 +1,10 @@
 import type { DatabaseConfig } from "./mod.ts";
-import type { Context, Database } from "./deps.ts";
+import type { Database } from "./deps.ts";
 import { openDb } from "./db.ts";
 
 interface Message {
     type: string,
     payload?: unknown
-}
-
-export const makeDatabaseSocketHandler = async (ctxt : Context, cfg : DatabaseConfig) => {
-    const socket = await ctxt.upgrade() as WebSocket;
-    return new DatabaseSocketHandler(socket, cfg);
 }
 
 export class DatabaseSocketHandler {
