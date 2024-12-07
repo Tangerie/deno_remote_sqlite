@@ -1,1 +1,1 @@
-export { Database } from "jsr:@db/sqlite";
+export { Database, Statement } from "jsr:@db/sqlite";
