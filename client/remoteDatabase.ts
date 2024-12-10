@@ -1,4 +1,3 @@
-import { resolve } from "jsr:@std/path@0.217/resolve";
 import type { Statement } from "./deps.ts";
 
 const OUTGOING_MESSAGE_TYPES = ["prepare", "run", "prepare.all", "prepare.get", "prepare.finalize"] as const;
