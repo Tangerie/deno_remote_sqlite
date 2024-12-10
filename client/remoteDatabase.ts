@@ -34,7 +34,7 @@ export class RemoteStatement {
         this.handle = handle;
     }
 
-    public async get<R extends Record<string, unknown> = {}>(...params : Parameters<Statement["get"]>) : Promise<R | undefined> {
+    public async get<R extends object = {}>(...params : Parameters<Statement["get"]>) : Promise<R | undefined> {
         if(this.isDone) throw new Error("Statement has been disposed")
         return await this.origin.sendAndWait({
             type: "prepare.get",
@@ -45,7 +45,7 @@ export class RemoteStatement {
         })
     }
 
-    public async all<R extends Record<string, unknown> = {}>(...params : Parameters<Statement["all"]>) : Promise<R[]> {
+    public async all<R extends object = {}>(...params : Parameters<Statement["all"]>) : Promise<R[]> {
         if(this.isDone) throw new Error("Statement has been disposed")
         return await this.origin.sendAndWait({
             type: "prepare.all",
@@ -139,7 +139,7 @@ export class RemoteDatabase {
         return new RemoteStatement(this, handleId);
     }
 
-    public run<T extends Record<string, unknown> = {}>(statement : string, ...params : Parameters<Statement["all"]>) : Promise<T[]> {
+    public run<T extends object = {}>(statement : string, ...params : Parameters<Statement["all"]>) : Promise<T[]> {
         return this.sendCall<T[]>("run", statement, ...params);
     }
 
