@@ -29,7 +29,7 @@ export const openDb = (cfg : DatabaseConfig) => {
             // console.log("[DB] Handle Closed", handles.get(key)!.count);
             if(handles.get(key)!.count === 0) {
                 // console.log("[DB] All Handles Done");
-                db.exec("PRAGMA analysis_limit=400; PRAGMA optimize;");
+                if(!cfg.readonly) db.exec("PRAGMA analysis_limit=400; PRAGMA optimize;");
                 db._close();
                 handles.delete(key);
             }
