@@ -9,6 +9,7 @@ const handles = new Map<string, { count: number, handle: Database }>();
 
 export const openDb = (cfg : DatabaseConfig) => {
     const key = JSON.stringify(cfg);
+    console.log("[RemoteDB] Open", cfg);
 
     if(handles.has(key)) {
         handles.get(key)!.count++;
@@ -29,7 +30,11 @@ export const openDb = (cfg : DatabaseConfig) => {
             // console.log("[DB] Handle Closed", handles.get(key)!.count);
             if(handles.get(key)!.count === 0) {
                 // console.log("[DB] All Handles Done");
-                if(!cfg.readonly) db.exec("PRAGMA analysis_limit=400; PRAGMA optimize;");
+                if(cfg.readonly) { 
+                    console.log("[RemoteDB] Closing Readonly")
+                } else {
+                    db.exec("PRAGMA analysis_limit=400; PRAGMA optimize;");
+                }
                 db._close();
                 handles.delete(key);
             }
