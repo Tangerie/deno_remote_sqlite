@@ -1,6 +1,5 @@
-import type { DatabaseConfig } from "./mod.ts";
-import type { Database, Statement } from "./deps.ts";
-import { openDb } from "./db.ts";
+import { openDb, type DatabaseConfig } from "./db.ts";
+import type { Database, Statement } from "@db/sqlite";
 
 const INCOMING_MESSAGE_TYPES = ["prepare", "run", "prepare.all", "prepare.get", "prepare.finalize"] as const;
 const OUTGOING_MESSAGE_TYPES = ["respond", "error"] as const;
@@ -52,7 +51,7 @@ export class DatabaseSocketHandler {
     onOpen() {
     }
 
-    onMessage(msg : IncomingMessage) {
+    onMessage(msg : IncomingMessage): void {
         if(!INCOMING_MESSAGE_TYPES.includes(msg.type)) {
             return this.error(msg.id, "Unknown Message Type");
         }
@@ -97,17 +96,17 @@ export class DatabaseSocketHandler {
         }
     }
 
-    send(msg : OutgoingMessage) {
+    send(msg : OutgoingMessage): void {
         this.socket.send(JSON.stringify(msg))
     }
 
-    respond(id : number, payload?: unknown) {
+    respond(id : number, payload?: unknown): void {
         return this.send({
             id, type: "respond", payload
         })
     }
 
-    error(id : number, payload?: unknown) {
+    error(id : number, payload?: unknown): void {
         return this.send({
             id, type: "error", payload
         })

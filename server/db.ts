@@ -1,4 +1,4 @@
-import { Database } from "./deps.ts";
+import { Database } from "@db/sqlite";
 
 export interface DatabaseConfig {
     path: string;

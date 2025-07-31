@@ -1,4 +1,4 @@
-import type { Statement } from "./deps.ts";
+import type { Statement } from "@db/sqlite";
 
 const OUTGOING_MESSAGE_TYPES = ["prepare", "run", "prepare.all", "prepare.get", "prepare.finalize"] as const;
 const INCOMING_MESSAGE_TYPES = ["respond", "error"] as const;
@@ -77,8 +77,8 @@ export class RemoteDatabase {
         }
     }
 
-    public open() {
-        if(this.socket.readyState === WebSocket.OPEN) return this;
+    public open(): Promise<undefined> {
+        if(this.socket.readyState === WebSocket.OPEN) return Promise.resolve(undefined);
         else if(this.socket.readyState !== WebSocket.CONNECTING) {
             throw new Error("Failed to open");
         }
@@ -133,7 +133,7 @@ export class RemoteDatabase {
         })
     }
 
-    public async prepare(statement: string) {
+    public async prepare(statement: string): Promise<RemoteStatement> {
         const handleId = await this.sendCall<RemoteStatementHandle>("prepare", statement);
         return new RemoteStatement(this, handleId);
     }

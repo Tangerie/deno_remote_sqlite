@@ -1,4 +1,4 @@
-import { RemoteDatabase } from "./mod.ts";
+import { RemoteDatabase } from "../client/mod.ts";
 
 if (!import.meta.main) {
   throw new Error("This is to be run, not imported")

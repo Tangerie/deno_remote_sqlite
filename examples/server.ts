@@ -3,7 +3,7 @@ if (!import.meta.main) {
 }
 
 import { Application, Router, type Context } from "jsr:@oak/oak@^17.1.3"
-import { DatabaseSocketHandler } from "./mod.ts";
+import { DatabaseSocketHandler } from "../server/mod.ts";
 
 const app = new Application();
 const port = 8090;

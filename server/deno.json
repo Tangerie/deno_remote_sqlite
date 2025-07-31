@@ -1,9 +1,0 @@
-{
-  "name": "@judy/drsserver",
-  "tasks": {
-    "dev": "deno run -A --unstable-ffi --watch example.ts"
-  },
-  "imports": {
-  },
-  "exports": "./mod.ts"
-}

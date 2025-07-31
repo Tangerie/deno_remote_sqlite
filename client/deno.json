@@ -1,9 +1,0 @@
-{
-  "name": "@judy/drsclient",
-  "tasks": {
-    "dev": "deno run -A --watch example.ts"
-  },
-  "imports": {
-  },
-  "exports": "./mod.ts"
-}

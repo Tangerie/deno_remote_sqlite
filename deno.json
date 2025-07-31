@@ -1,10 +1,24 @@
 {
+  "name": "@tangerie/remote-sqlite",
+  "version": "1.0.0",
   "tasks": {
+    "dry": "deno publish --dry-run --allow-dirty",
+    "test": "deno test -A --unstable-ffi"
   },
-  "workspace": [
-    "./client",
-    "./server"
-  ],
+  "exports": {
+      "./server": "./server/mod.ts",
+      "./client": "./client/mod.ts"
+  },
   "imports": {
+    "@db/sqlite": "jsr:@db/sqlite@^0.12.0"
+  },
+  "license": "MIT",
+  "publish": {
+    "exclude": [
+      "examples/**/*",
+      ".cache",
+      "**/*.test.ts",
+      "*.sqlite3"
+    ]
   }
 }
