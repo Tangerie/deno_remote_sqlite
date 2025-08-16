@@ -1,0 +1,17 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:create-vite@*": "7.1.1"
+  },
+  "npm": {
+    "create-vite@7.1.1": {
+      "integrity": "sha512-9njjp5o1Sc+4XRpyARFillR+dNS0x50U8i2tB6H2KDKYAKWbntUcOOPcNJxTglAwd9nJxznq9K67kl3B/JkCZg==",
+      "bin": true
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@db/sqlite@0.12"
+    ]
+  }
+}

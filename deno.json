@@ -16,6 +16,7 @@
   "publish": {
     "exclude": [
       "examples/**/*",
+      "viewer",
       ".cache",
       "**/*.test.ts",
       "*.sqlite3"

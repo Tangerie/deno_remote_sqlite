@@ -70,6 +70,8 @@ export class RemoteDatabase {
     private socket : WebSocket;
     private waitingCallbacks = new Map<number, (data : unknown, error : boolean) => void>();
 
+    private _lastSendDbg? : OutgoingMessage = undefined;
+
     constructor(url : string) {
         this.socket = new WebSocket(url);
         this.socket.onmessage = (ev) => {
@@ -96,6 +98,7 @@ export class RemoteDatabase {
             }
             waiting(msg.payload, true);
             this.waitingCallbacks.delete(msg.id);
+            console.error("Last Outgoing Message", this._lastSendDbg);
             throw new Error(`${msg.payload}`);
         }
 
@@ -111,6 +114,7 @@ export class RemoteDatabase {
     }
 
     private send(msg : OutgoingMessage) {
+        this._lastSendDbg = msg;
         this.socket.send(JSON.stringify(msg));
     }
 
