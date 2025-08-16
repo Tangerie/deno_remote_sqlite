@@ -6,5 +6,10 @@ Create a preact app, using typescript, deno, vite and tailwindcss. It's a sqlite
 - Do not write any css, only write TailwindCSS classes
 
 ## Style
+### Folders
 - Components (.tsx) go in `src/components`
 - Modules (.tx) go in `src/components` 
+
+### Code
+- Indent = 4 spaces
+- Always be explicit with types
