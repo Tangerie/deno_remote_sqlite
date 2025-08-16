@@ -10,7 +10,21 @@ import ViewSchemas from './pages/ViewSchemas.tsx';
 import ExecuteSQL from './pages/ExecuteSQL.tsx';
 import { DatabaseManager } from './modules/database.ts';
 import { TableInfo } from './modules/types.ts';
-import { useAppStore, appActions } from './stores/appStore.ts';
+import { 
+    useAppStore, 
+    openDb, 
+    closeDb, 
+    selectTable, 
+    loadTableData as loadTableDataAction,
+    setPageSize, 
+    setLoading, 
+    setError, 
+    setTableData, 
+    setTableColumns, 
+    setTableInfo, 
+    setTotalRows, 
+    setTotalPages 
+} from './stores/appStore.ts';
 
 export default function App() {
     const { 
@@ -35,48 +49,30 @@ export default function App() {
         const effectivePageSize = newPageSize !== undefined ? newPageSize : pageSize;
 
         try {
-            appActions.setLoading(true);
-            appActions.setError(null);
-            appActions.setSelectedTable(tableName);
-            appActions.setCurrentPage(page);
+            setLoading(true);
+            setError(null);
+            await selectTable(tableName);
+            
             if (newPageSize !== undefined) {
-                appActions.setPageSize(newPageSize);
+                setPageSize(newPageSize);
             }
 
-            const result = await DatabaseManager.loadTableData(db, tableName, page, effectivePageSize);
-            appActions.setTableData(result.tableData);
-            
-            // Store column information for placeholder rows
-            if (result.tableData.length > 0) {
-                appActions.setTableColumns(Object.keys(result.tableData[0]));
-            } else {
-                // Get columns from table info
-                const table = tables.find(t => t.name === tableName);
-                if (table) {
-                    appActions.setTableColumns(table.columns);
-                }
-            }
-            
-            appActions.setTableInfo(result.tableInfo);
-            appActions.setTotalRows(result.totalRows);
-            appActions.setTotalPages(result.totalPages);
+            // Load the table data after selecting the table
+            await loadTableDataAction(tableName, page);
         } catch (err: any) {
-            appActions.setError(`Failed to load table data: ${err.message}`);
+            setError(`Failed to load table data: ${err.message}`);
             console.error(err);
         } finally {
-            appActions.setLoading(false);
+            setLoading(false);
         }
     };
 
     // Cleanup on unmount
     useEffect(() => {
         return () => {
-            if (db) {
-                db.close();
-                appActions.setDb(null);
-            }
+            closeDb();
         };
-    }, [db]);
+    }, []);
 
     return (
         <div class="min-h-screen bg-gray-900 p-4">

@@ -38,4 +38,12 @@ export class DatabaseManager {
             totalPages: Math.ceil(totalRows / pageSize)
         };
     }
+
+    static async getTables(database: RemoteDatabase): Promise<TableInfo[]> {
+        return this.loadTables(database);
+    }
+
+    static async queryTable(database: RemoteDatabase, tableName: string, page: number = 1, pageSize: number = 50) {
+        return this.loadTableData(database, tableName, page, pageSize);
+    }
 }
