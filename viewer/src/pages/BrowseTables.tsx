@@ -1,5 +1,7 @@
 import TableDisplay from '../components/TableDisplay.tsx';
-import { useAppStore } from '../stores/appStore.ts';
+import { useDatabaseStore } from '../stores/databaseStore.ts';
+import { useTableDataStore } from '../stores/tableDataStore.ts';
+import { useUIStore } from '../stores/uiStore.ts';
 
 interface BrowseTablesProps {
     loadTableData: (tableName: string, page: number, newPageSize?: number) => Promise<void>;
@@ -8,18 +10,22 @@ interface BrowseTablesProps {
 export default function BrowseTables({
     loadTableData
 }: BrowseTablesProps) {
+    const { selectedTable } = useDatabaseStore(state => ({
+        selectedTable: state.selectedTable
+    }));
     const { 
-        selectedTable,
         tableData,
         tableColumns,
         tableInfo,
-        loading,
-        error,
         currentPage,
         pageSize,
         totalRows,
         totalPages
-    } = useAppStore(state => state);
+    } = useTableDataStore(state => state);
+    const { 
+        loading,
+        error
+    } = useUIStore(state => state);
 
     return (
         <TableDisplay 

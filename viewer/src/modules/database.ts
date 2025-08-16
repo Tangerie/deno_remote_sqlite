@@ -1,49 +1,40 @@
 import { RemoteDatabase } from '@tangerie/deno_remote_sqlite/client';
 import { TableInfo } from './types.ts';
 
-export class DatabaseManager {
-    static async loadTables(database: RemoteDatabase): Promise<TableInfo[]> {
-        // Get list of tables
-        const tableRows = await database.run<{name : string}>("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name");
+// Simplified database functions
+export const getTables = async (database: RemoteDatabase): Promise<TableInfo[]> => {
+    // Get list of tables
+    const tableRows = await database.run<{name : string}>("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name");
 
-        // Get column info for each table
-        const tableInfo: TableInfo[] = [];
-        for (const row of tableRows) {
-            const columnRows = await database.run<{name: string}>(`SELECT * FROM pragma_table_xinfo(?) WHERE hidden = 0`, row.name);
-            tableInfo.push({
-                name: row.name,
-                columns: columnRows.map(col => col.name)
-            });
-        }
-
-        return tableInfo;
+    // Get column info for each table
+    const tables: TableInfo[] = [];
+    for (const row of tableRows) {
+        const columnRows = await database.run<{name: string}>(`SELECT * FROM pragma_table_xinfo(?) WHERE hidden = 0`, row.name);
+        tables.push({
+            name: row.name,
+            columns: columnRows.map(col => col.name)
+        });
     }
 
-    static async loadTableData(database: RemoteDatabase, tableName: string, page: number = 1, pageSize: number = 50) {
-        // Get total row count
-        const countResult = await database.run<{count: number}>(`SELECT COUNT(*) as count FROM "${tableName}"`);
-        const totalRows = countResult[0].count;
+    return tables;
+};
 
-        // Calculate offset
-        const offset = (page - 1) * pageSize;
+export const queryTable = async (database: RemoteDatabase, tableName: string, page: number = 1, pageSize: number = 50) => {
+    // Get total row count
+    const countResult = await database.run<{count: number}>(`SELECT COUNT(*) as count FROM "${tableName}"`);
+    const totalRows = countResult[0].count;
 
-        // Load page of data
-        const rows = await database.run<any>(`SELECT * FROM "${tableName}" LIMIT ${pageSize} OFFSET ${offset}`);
+    // Calculate offset
+    const offset = (page - 1) * pageSize;
 
-        return {
-            tableData: rows,
-            tableInfo: `${totalRows} rows`,
-            totalRows,
-            currentPage: page,
-            totalPages: Math.ceil(totalRows / pageSize)
-        };
-    }
+    // Load page of data
+    const rows = await database.run<any>(`SELECT * FROM "${tableName}" LIMIT ${pageSize} OFFSET ${offset}`);
 
-    static async getTables(database: RemoteDatabase): Promise<TableInfo[]> {
-        return this.loadTables(database);
-    }
-
-    static async queryTable(database: RemoteDatabase, tableName: string, page: number = 1, pageSize: number = 50) {
-        return this.loadTableData(database, tableName, page, pageSize);
-    }
-}
+    return {
+        tableData: rows,
+        tableInfo: `${totalRows} rows`,
+        totalRows,
+        currentPage: page,
+        totalPages: Math.ceil(totalRows / pageSize)
+    };
+};

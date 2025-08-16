@@ -1,4 +1,6 @@
-import { useAppStore } from '../stores/appStore.ts';
+import { useDatabaseStore } from '../stores/databaseStore.ts';
+import { useUIStore } from '../stores/uiStore.ts';
+import TableItem from './TableItem.tsx';
 
 interface TablesSidebarProps {
     loadTableData: (tableName: string) => void;
@@ -7,11 +9,13 @@ interface TablesSidebarProps {
 export default function TablesSidebar({
     loadTableData
 }: TablesSidebarProps) {
-    const { tables, selectedTable, loading, db } = useAppStore(state => ({
+    const { tables, selectedTable, db } = useDatabaseStore(state => ({
         tables: state.tables,
         selectedTable: state.selectedTable,
-        loading: state.loading,
         db: state.db
+    }));
+    const { loading } = useUIStore(state => ({
+        loading: state.loading
     }));
 
     return (
@@ -26,19 +30,12 @@ export default function TablesSidebar({
                     <div>
                         <ul class="space-y-2 overflow-y-auto">
                             {tables.map((table) => (
-                                <li key={table.name}>
-                                    <button
-                                        onClick={() => loadTableData(table.name)}
-                                        class={`w-full text-left px-4 py-2 rounded-md transition duration-200 flex items-center ${
-                                            selectedTable === table.name
-                                                ? 'bg-blue-900 text-blue-100'
-                                                : 'hover:bg-gray-700 text-gray-200'
-                                        }`}
-                                    >
-                                        <span class={`mr-3 ${selectedTable === table.name ? 'text-blue-400' : 'text-blue-300'}`}>📋</span>
-                                        {table.name}
-                                    </button>
-                                </li>
+                                <TableItem
+                                    key={table.name}
+                                    tableName={table.name}
+                                    isSelected={selectedTable === table.name}
+                                    onClick={() => loadTableData(table.name)}
+                                />
                             ))}
                         </ul>
                     </div>

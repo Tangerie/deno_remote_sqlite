@@ -1,9 +1,13 @@
 import { useState } from 'preact/hooks';
-import { useAppStore } from '../stores/appStore.ts';
+import { useDatabaseStore } from '../stores/databaseStore.ts';
+import { useUIStore } from '../stores/uiStore.ts';
+import ResultsTable from '../components/ResultsTable.tsx';
 
 export default function ExecuteSQL() {
-    const { db, loading } = useAppStore(state => ({
-        db: state.db,
+    const { db } = useDatabaseStore(state => ({
+        db: state.db
+    }));
+    const { loading } = useUIStore(state => ({
         loading: state.loading
     }));
     
@@ -94,33 +98,7 @@ export default function ExecuteSQL() {
             {results && (
                 <div class="mt-6">
                     <h3 class="text-lg font-medium text-white mb-3">Results</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-700">
-                            <thead class="bg-gray-750">
-                                <tr>
-                                    {Object.keys(results[0]).map((column) => (
-                                        <th
-                                            key={column}
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
-                                        >
-                                            {column}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody class="bg-gray-800 divide-y divide-gray-700">
-                                {results.map((row, rowIndex) => (
-                                    <tr key={rowIndex} class="hover:bg-gray-750">
-                                        {Object.keys(results[0]).map((key, colIndex) => (
-                                            <td key={colIndex} class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                {row[key] !== null && row[key] !== undefined ? String(row[key]) : 'NULL'}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <ResultsTable results={results} />
                 </div>
             )}
             

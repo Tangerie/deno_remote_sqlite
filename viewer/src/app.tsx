@@ -1,6 +1,5 @@
 import { useEffect } from 'preact/hooks';
 import { Router, Route } from 'preact-iso';
-import { RemoteDatabase } from '@tangerie/deno_remote_sqlite/client';
 import Header from './components/Header.tsx';
 import Navigation from './components/Navigation.tsx';
 import ConnectionPanel from './components/ConnectionPanel.tsx';
@@ -8,40 +7,35 @@ import TablesSidebar from './components/TablesSidebar.tsx';
 import BrowseTables from './pages/BrowseTables.tsx';
 import ViewSchemas from './pages/ViewSchemas.tsx';
 import ExecuteSQL from './pages/ExecuteSQL.tsx';
-import { DatabaseManager } from './modules/database.ts';
-import { TableInfo } from './modules/types.ts';
 import { 
-    useAppStore, 
+    useDatabaseStore, 
     openDb, 
     closeDb, 
-    selectTable, 
+    selectTable 
+} from './stores/databaseStore.ts';
+import { 
+    useTableDataStore,
     loadTableData as loadTableDataAction,
-    setPageSize, 
-    setLoading, 
-    setError, 
-    setTableData, 
-    setTableColumns, 
-    setTableInfo, 
-    setTotalRows, 
-    setTotalPages 
-} from './stores/appStore.ts';
+    setPageSize
+} from './stores/tableDataStore.ts';
+import { 
+    useUIStore,
+    setLoading,
+    setError
+} from './stores/uiStore.ts';
 
 export default function App() {
+    const { db, tables, selectedTable, url } = useDatabaseStore(state => state);
     const { 
-        db, 
-        tables, 
-        selectedTable, 
         tableData, 
         tableColumns, 
-        loading, 
-        error, 
-        url, 
         tableInfo, 
         currentPage, 
         pageSize, 
         totalRows, 
         totalPages 
-    } = useAppStore(state => state);
+    } = useTableDataStore(state => state);
+    const { loading, error } = useUIStore(state => state);
 
     const loadTableData = async (tableName: string, page: number, newPageSize?: number) => {
         if (!db) return;
@@ -58,7 +52,7 @@ export default function App() {
             }
 
             // Load the table data after selecting the table
-            await loadTableDataAction(tableName, page);
+            await loadTableDataAction(db, tableName, page, effectivePageSize, tables);
         } catch (err: any) {
             setError(`Failed to load table data: ${err.message}`);
             console.error(err);
