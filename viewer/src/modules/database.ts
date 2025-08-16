@@ -1,4 +1,4 @@
-import { RemoteDatabase } from '../../../client/mod.ts';
+import { RemoteDatabase } from '@tangerie/deno_remote_sqlite/client';
 import { TableInfo } from './types.ts';
 
 export class DatabaseManager {
@@ -9,8 +9,7 @@ export class DatabaseManager {
         // Get column info for each table
         const tableInfo: TableInfo[] = [];
         for (const row of tableRows) {
-            const columnRows = await database.run(`SELECT * FROM pragma_table_xinfo(?) WHERE hidden = 0`, row.name);
-            console.log(columnRows)
+            const columnRows = await database.run<{name: string}>(`SELECT * FROM pragma_table_xinfo(?) WHERE hidden = 0`, row.name);
             tableInfo.push({
                 name: row.name,
                 columns: columnRows.map(col => col.name)
@@ -22,14 +21,14 @@ export class DatabaseManager {
 
     static async loadTableData(database: RemoteDatabase, tableName: string, page: number = 1, pageSize: number = 50) {
         // Get total row count
-        const countResult = await database.run(`SELECT COUNT(*) as count FROM "${tableName}"`);
+        const countResult = await database.run<{count: number}>(`SELECT COUNT(*) as count FROM "${tableName}"`);
         const totalRows = countResult[0].count;
 
         // Calculate offset
         const offset = (page - 1) * pageSize;
 
         // Load page of data
-        const rows = await database.run(`SELECT * FROM "${tableName}" LIMIT ${pageSize} OFFSET ${offset}`);
+        const rows = await database.run<any>(`SELECT * FROM "${tableName}" LIMIT ${pageSize} OFFSET ${offset}`);
 
         return {
             tableData: rows,

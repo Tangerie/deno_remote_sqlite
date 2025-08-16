@@ -1,0 +1,41 @@
+{
+  "tasks": {
+    "dev": "deno run -A npm:vite",
+    "build": "deno run -A npm:vite build"
+  },
+
+  "imports": {
+    "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.5",
+    "@preact/preset-vite": "npm:@preact/preset-vite@^2.10.2",
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.12",
+    "@tangerie/global-store": "jsr:@tangerie/global-store@^1.4.0",
+    "@tangerie/deno_remote_sqlite/client": "../client/mod.ts",
+    "autoprefixer": "npm:autoprefixer@^10.4.21",
+    "postcss": "npm:postcss@^8.5.6",
+    "preact": "npm:preact@^10.27.0",
+    "preact-iso": "npm:preact-iso@^2.9.2",
+    "tailwindcss": "npm:tailwindcss@^4.1.12",
+    "vite": "npm:vite@^7.1.2"
+  },
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+      "types": [
+          "vite/client"
+      ],
+      "lib": [
+          "dom",
+          "dom.iterable",
+          "deno.ns",
+          "ES2020"
+      ],
+      "jsx": "react-jsx",
+      "jsxImportSource": "preact"
+      
+  },
+  "exclude": [
+    "**/.vite/",
+    "**/node_modules/",
+    "./dist",
+    "./vite.config.ts"
+  ]
+}

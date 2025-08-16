@@ -1,20 +1,19 @@
-import { TableInfo } from '../modules/types.ts';
+import { useAppStore } from '../stores/appStore.ts';
 
 interface TablesSidebarProps {
-    tables: TableInfo[];
-    selectedTable: string | null;
-    loading: boolean;
-    db: any;
     loadTableData: (tableName: string) => void;
 }
 
 export default function TablesSidebar({
-    tables,
-    selectedTable,
-    loading,
-    db,
     loadTableData
 }: TablesSidebarProps) {
+    const { tables, selectedTable, loading, db } = useAppStore(state => ({
+        tables: state.tables,
+        selectedTable: state.selectedTable,
+        loading: state.loading,
+        db: state.db
+    }));
+
     return (
         <div class="w-full lg:w-1/4">
             <div class="bg-gray-800 rounded-lg shadow-lg p-6">
@@ -36,7 +35,7 @@ export default function TablesSidebar({
                                                 : 'hover:bg-gray-700 text-gray-200'
                                         }`}
                                     >
-                                        <i class={`fas fa-table mr-3 ${selectedTable === table.name ? 'text-blue-400' : 'text-blue-300'}`}></i>
+                                        <span class={`mr-3 ${selectedTable === table.name ? 'text-blue-400' : 'text-blue-300'}`}>📋</span>
                                         {table.name}
                                     </button>
                                 </li>

@@ -1,51 +1,38 @@
-import { useState } from 'preact/hooks';
-import { RemoteDatabase } from '../../../client/mod.ts';
+import { RemoteDatabase } from '@tangerie/deno_remote_sqlite/client';
 import { DatabaseManager } from '../modules/database.ts';
 import { TableInfo } from '../modules/types.ts';
+import { useAppStore, appActions } from '../stores/appStore.ts';
 
-interface ConnectionPanelProps {
-    db: RemoteDatabase | null;
-    url: string;
-    setUrl: (url: string) => void;
-    setDb: (db: RemoteDatabase | null) => void;
-    setTables: (tables: TableInfo[]) => void;
-    setLoading: (loading: boolean) => void;
-    setError: (error: string | null) => void;
-}
+export default function ConnectionPanel() {
+    const { db, url } = useAppStore(state => ({
+        db: state.db,
+        url: state.url
+    }));
 
-export default function ConnectionPanel({
-    db,
-    url,
-    setUrl,
-    setDb,
-    setTables,
-    setLoading,
-    setError
-}: ConnectionPanelProps) {
     const connectToDatabase = async () => {
         try {
-            setLoading(true);
-            setError(null);
+            appActions.setLoading(true);
+            appActions.setError(null);
 
             const database = new RemoteDatabase(url);
             await database.open();
 
             const tableInfo = await DatabaseManager.loadTables(database);
-            setDb(database);
-            setTables(tableInfo);
-        } catch (err) {
-            setError(`Failed to connect to database: ${err.message}`);
+            appActions.setDb(database);
+            appActions.setTables(tableInfo);
+        } catch (err: any) {
+            appActions.setError(`Failed to connect to database: ${err.message}`);
             console.error(err);
         } finally {
-            setLoading(false);
+            appActions.setLoading(false);
         }
     };
 
     const disconnect = () => {
         if (db) {
             db.close();
-            setDb(null);
-            setTables([]);
+            appActions.setDb(null);
+            appActions.setTables([]);
         }
     };
 
@@ -58,7 +45,7 @@ export default function ConnectionPanel({
                     <input
                         type="text"
                         value={url}
-                        onInput={(e) => setUrl(e.target.value)}
+                        onInput={(e) => appActions.setUrl((e.target as HTMLInputElement).value)}
                         class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                         placeholder="wss://your-database-server.com"
                     />

@@ -1,14 +1,33 @@
 {
   "version": "5",
   "specifiers": {
-    "npm:@preact/preset-vite@^2.10.2": "2.10.2_@babel+core@7.28.3_vite@7.1.2__picomatch@4.0.3_preact@10.27.0",
-    "npm:@tailwindcss/vite@^4.1.12": "4.1.12_vite@7.1.2__picomatch@4.0.3",
+    "jsr:@std/collections@^1.1.2": "1.1.2",
+    "jsr:@tangerie/global-store@^1.4.0": "1.4.0",
+    "npm:@deno/vite-plugin@^1.0.5": "1.0.5_vite@7.1.2__picomatch@4.0.3_@types+node@24.2.0",
+    "npm:@preact/preset-vite@^2.10.2": "2.10.2_@babel+core@7.28.3_vite@7.1.2__picomatch@4.0.3_preact@10.27.0_@types+node@24.2.0",
+    "npm:@tailwindcss/vite@^4.1.12": "4.1.12_vite@7.1.2__picomatch@4.0.3_@types+node@24.2.0",
+    "npm:@types/node@*": "24.2.0",
     "npm:autoprefixer@^10.4.21": "10.4.21_postcss@8.5.6",
+    "npm:immer@^10.1.1": "10.1.1",
     "npm:postcss@^8.5.6": "8.5.6",
+    "npm:preact-iso@^2.9.2": "2.9.2_preact@10.27.0_preact-render-to-string@6.5.13__preact@10.27.0",
     "npm:preact@^10.27.0": "10.27.0",
     "npm:tailwindcss@^4.1.12": "4.1.12",
-    "npm:typescript@~5.8.3": "5.8.3",
-    "npm:vite@^7.1.2": "7.1.2_picomatch@4.0.3"
+    "npm:vite@*": "7.1.2_picomatch@4.0.3_@types+node@24.2.0",
+    "npm:vite@^7.1.2": "7.1.2_picomatch@4.0.3_@types+node@24.2.0"
+  },
+  "jsr": {
+    "@std/collections@1.1.2": {
+      "integrity": "f1685dd45c3ec27c39d0e8a642ccf810f391ec8a6cb5e7355926e6dacc64c43e"
+    },
+    "@tangerie/global-store@1.4.0": {
+      "integrity": "8cc1fd57021ff06b087b4a8249291a811ef0b4526960c0d48ba6cb4580340615",
+      "dependencies": [
+        "jsr:@std/collections",
+        "npm:immer",
+        "npm:preact"
+      ]
+    }
   },
   "npm": {
     "@ampproject/remapping@2.3.0": {
@@ -170,6 +189,18 @@
       "dependencies": [
         "@babel/helper-string-parser",
         "@babel/helper-validator-identifier"
+      ]
+    },
+    "@deno/vite-plugin@1.0.5_vite@7.1.2__picomatch@4.0.3": {
+      "integrity": "sha512-tLja5n4dyMhcze1NzvSs2iiriBymfBlDCZIrjMTxb9O2ru0gvmV6mn5oBD2teNw5Sd92cj3YJzKwsAs8tMJXlg==",
+      "dependencies": [
+        "vite@7.1.2_picomatch@4.0.3"
+      ]
+    },
+    "@deno/vite-plugin@1.0.5_vite@7.1.2__picomatch@4.0.3_@types+node@24.2.0": {
+      "integrity": "sha512-tLja5n4dyMhcze1NzvSs2iiriBymfBlDCZIrjMTxb9O2ru0gvmV6mn5oBD2teNw5Sd92cj3YJzKwsAs8tMJXlg==",
+      "dependencies": [
+        "vite@7.1.2_picomatch@4.0.3_@types+node@24.2.0"
       ]
     },
     "@emnapi/core@1.4.5": {
@@ -368,13 +399,28 @@
         "@babel/core",
         "@babel/plugin-transform-react-jsx",
         "@babel/plugin-transform-react-jsx-development",
-        "@prefresh/vite",
+        "@prefresh/vite@2.4.8_preact@10.27.0_vite@7.1.2__picomatch@4.0.3",
         "@rollup/pluginutils",
         "babel-plugin-transform-hook-names",
         "debug",
         "picocolors",
-        "vite",
-        "vite-prerender-plugin"
+        "vite@7.1.2_picomatch@4.0.3",
+        "vite-prerender-plugin@0.5.11_vite@7.1.2__picomatch@4.0.3"
+      ]
+    },
+    "@preact/preset-vite@2.10.2_@babel+core@7.28.3_vite@7.1.2__picomatch@4.0.3_preact@10.27.0_@types+node@24.2.0": {
+      "integrity": "sha512-K9wHlJOtkE+cGqlyQ5v9kL3Ge0Ql4LlIZjkUTL+1zf3nNdF88F9UZN6VTV8jdzBX9Fl7WSzeNMSDG7qECPmSmg==",
+      "dependencies": [
+        "@babel/core",
+        "@babel/plugin-transform-react-jsx",
+        "@babel/plugin-transform-react-jsx-development",
+        "@prefresh/vite@2.4.8_preact@10.27.0_vite@7.1.2__picomatch@4.0.3_@types+node@24.2.0",
+        "@rollup/pluginutils",
+        "babel-plugin-transform-hook-names",
+        "debug",
+        "picocolors",
+        "vite@7.1.2_picomatch@4.0.3_@types+node@24.2.0",
+        "vite-prerender-plugin@0.5.11_vite@7.1.2__picomatch@4.0.3_@types+node@24.2.0"
       ]
     },
     "@prefresh/babel-plugin@0.5.2": {
@@ -398,7 +444,19 @@
         "@prefresh/utils",
         "@rollup/pluginutils",
         "preact",
-        "vite"
+        "vite@7.1.2_picomatch@4.0.3"
+      ]
+    },
+    "@prefresh/vite@2.4.8_preact@10.27.0_vite@7.1.2__picomatch@4.0.3_@types+node@24.2.0": {
+      "integrity": "sha512-H7vlo9UbJInuRbZhRQrdgVqLP7qKjDoX7TgYWWwIVhEHeHO0hZ4zyicvwBrV1wX5A3EPOmArgRkUaN7cPI2VXQ==",
+      "dependencies": [
+        "@babel/core",
+        "@prefresh/babel-plugin",
+        "@prefresh/core",
+        "@prefresh/utils",
+        "@rollup/pluginutils",
+        "preact",
+        "vite@7.1.2_picomatch@4.0.3_@types+node@24.2.0"
       ]
     },
     "@rollup/pluginutils@4.2.1": {
@@ -615,7 +673,16 @@
         "@tailwindcss/node",
         "@tailwindcss/oxide",
         "tailwindcss",
-        "vite"
+        "vite@7.1.2_picomatch@4.0.3"
+      ]
+    },
+    "@tailwindcss/vite@4.1.12_vite@7.1.2__picomatch@4.0.3_@types+node@24.2.0": {
+      "integrity": "sha512-4pt0AMFDx7gzIrAOIYgYP0KCBuKWqyW8ayrdiLEjoJTT4pKTjrzG/e4uzWtTLDziC+66R9wbUqZBccJalSE5vQ==",
+      "dependencies": [
+        "@tailwindcss/node",
+        "@tailwindcss/oxide",
+        "tailwindcss",
+        "vite@7.1.2_picomatch@4.0.3_@types+node@24.2.0"
       ]
     },
     "@tybys/wasm-util@0.10.0": {
@@ -626,6 +693,12 @@
     },
     "@types/estree@1.0.8": {
       "integrity": "sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w=="
+    },
+    "@types/node@24.2.0": {
+      "integrity": "sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==",
+      "dependencies": [
+        "undici-types"
+      ]
     },
     "autoprefixer@10.4.21_postcss@8.5.6": {
       "integrity": "sha512-O+A6LWV5LDHSJD3LjHYoNi4VLsj/Whi7k6zG12xTYaU4cQ8oxQGckXNX8cRHK5yOZ/ppVHe0ZBXGzSV9jXdVbQ==",
@@ -715,8 +788,8 @@
         "domhandler"
       ]
     },
-    "electron-to-chromium@1.5.202": {
-      "integrity": "sha512-NxbYjRmiHcHXV1Ws3fWUW+SLb62isauajk45LUJ/HgIOkUA7jLZu/X2Iif+X9FBNK8QkF9Zb4Q2mcwXCcY30mg=="
+    "electron-to-chromium@1.5.203": {
+      "integrity": "sha512-uz4i0vLhfm6dLZWbz/iH88KNDV+ivj5+2SA+utpgjKaj9Q0iDLuwk6Idhe9BTxciHudyx6IvTvijhkPvFGUQ0g=="
     },
     "enhanced-resolve@5.18.3": {
       "integrity": "sha512-d4lC8xfavMeBjzGr2vECC3fsGXziXZQyJxD868h2M/mBI3PwAuODxAkLkq5HYuvrPYcUtiLzsTo8U3PgX3Ocww==",
@@ -793,6 +866,9 @@
     "he@1.2.0": {
       "integrity": "sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==",
       "bin": true
+    },
+    "immer@10.1.1": {
+      "integrity": "sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw=="
     },
     "jiti@2.5.1": {
       "integrity": "sha512-twQoecYPiVA5K/h6SxtORw/Bs3ar+mLUtoPSc7iMXzQzK8d7eJ/R09wmTwAjiamETn1cXYPGfNnu7DMoHgu12w==",
@@ -951,6 +1027,19 @@
         "source-map-js"
       ]
     },
+    "preact-iso@2.9.2_preact@10.27.0_preact-render-to-string@6.5.13__preact@10.27.0": {
+      "integrity": "sha512-0AiOid/B/L+cGQerFam2dSV8dkwmRXxqFyDcpdDj2faDuv83YF/g9HYX7MGKWjqSOaQGcl0HLMSFkUIzCq+z+g==",
+      "dependencies": [
+        "preact",
+        "preact-render-to-string"
+      ]
+    },
+    "preact-render-to-string@6.5.13_preact@10.27.0": {
+      "integrity": "sha512-iGPd+hKPMFKsfpR2vL4kJ6ZPcFIoWZEcBf0Dpm3zOpdVvj77aY8RlLiQji5OMrngEyaxGogeakTb54uS2FvA6w==",
+      "dependencies": [
+        "preact"
+      ]
+    },
     "preact@10.27.0": {
       "integrity": "sha512-/DTYoB6mwwgPytiqQTh/7SFRL98ZdiD8Sk8zIUVOxtwq4oWcwrcd1uno9fE/zZmUaUrFNYzbH14CPebOz9tZQw=="
     },
@@ -1030,9 +1119,8 @@
     "tslib@2.8.1": {
       "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="
     },
-    "typescript@5.8.3": {
-      "integrity": "sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==",
-      "bin": true
+    "undici-types@7.10.0": {
+      "integrity": "sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag=="
     },
     "update-browserslist-db@1.1.3_browserslist@4.25.2": {
       "integrity": "sha512-UxhIZQ+QInVdunkDAaiazvvT/+fXL5Osr0JZlJulepYu6Jd7qJtDZjlur0emRlT71EN3ScPoE7gvsuIKKNavKw==",
@@ -1052,7 +1140,19 @@
         "simple-code-frame",
         "source-map",
         "stack-trace",
-        "vite"
+        "vite@7.1.2_picomatch@4.0.3"
+      ]
+    },
+    "vite-prerender-plugin@0.5.11_vite@7.1.2__picomatch@4.0.3_@types+node@24.2.0": {
+      "integrity": "sha512-xWOhb8Ef2zoJIiinYVunIf3omRfUbEXcPEvrkQcrDpJ2yjDokxhvQ26eSJbkthRhymntWx6816jpATrJphh+ug==",
+      "dependencies": [
+        "kolorist",
+        "magic-string",
+        "node-html-parser",
+        "simple-code-frame",
+        "source-map",
+        "stack-trace",
+        "vite@7.1.2_picomatch@4.0.3_@types+node@24.2.0"
       ]
     },
     "vite@7.1.2_picomatch@4.0.3": {
@@ -1070,6 +1170,25 @@
       ],
       "bin": true
     },
+    "vite@7.1.2_picomatch@4.0.3_@types+node@24.2.0": {
+      "integrity": "sha512-J0SQBPlQiEXAF7tajiH+rUooJPo0l8KQgyg4/aMunNtrOa7bwuZJsJbDWzeljqQpgftxuq5yNJxQ91O9ts29UQ==",
+      "dependencies": [
+        "@types/node",
+        "esbuild",
+        "fdir",
+        "picomatch@4.0.3",
+        "postcss",
+        "rollup",
+        "tinyglobby"
+      ],
+      "optionalDependencies": [
+        "fsevents"
+      ],
+      "optionalPeers": [
+        "@types/node"
+      ],
+      "bin": true
+    },
     "yallist@3.1.1": {
       "integrity": "sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g=="
     },
@@ -1077,18 +1196,26 @@
       "integrity": "sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw=="
     }
   },
+  "redirects": {
+    "https://esm.sh/preact/jsx-runtime": "https://esm.sh/preact@10.27.0/jsx-runtime"
+  },
+  "remote": {
+    "https://esm.sh/preact@10.27.0/denonext/jsx-runtime.mjs": "eca8d082839db06e1964509be699072222b5822483819dc5ac96d7fee1201343",
+    "https://esm.sh/preact@10.27.0/denonext/preact.mjs": "7c0a67d0152259c63d2afea05ce8791f6f4e38ef355fdab8a2c71989cf590c3d",
+    "https://esm.sh/preact@10.27.0/jsx-runtime": "f33f69315b770515e473b14403cef9c49f3427ff61016041220e36505ab8cc68"
+  },
   "workspace": {
-    "packageJson": {
-      "dependencies": [
-        "npm:@preact/preset-vite@^2.10.2",
-        "npm:@tailwindcss/vite@^4.1.12",
-        "npm:autoprefixer@^10.4.21",
-        "npm:postcss@^8.5.6",
-        "npm:preact@^10.27.0",
-        "npm:tailwindcss@^4.1.12",
-        "npm:typescript@~5.8.3",
-        "npm:vite@^7.1.2"
-      ]
-    }
+    "dependencies": [
+      "jsr:@tangerie/global-store@^1.4.0",
+      "npm:@deno/vite-plugin@^1.0.5",
+      "npm:@preact/preset-vite@^2.10.2",
+      "npm:@tailwindcss/vite@^4.1.12",
+      "npm:autoprefixer@^10.4.21",
+      "npm:postcss@^8.5.6",
+      "npm:preact-iso@^2.9.2",
+      "npm:preact@^10.27.0",
+      "npm:tailwindcss@^4.1.12",
+      "npm:vite@^7.1.2"
+    ]
   }
 }
