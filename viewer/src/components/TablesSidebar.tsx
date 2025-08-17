@@ -1,6 +1,7 @@
 import { useDatabaseStore } from '../stores/databaseStore.ts';
 import { useUIStore } from '../stores/uiStore.ts';
 import TableItem from './TableItem.tsx';
+import LoadingSpinner from './LoadingSpinner.tsx';
 
 interface TablesSidebarProps {
     loadTableData: (tableName: string) => void;
@@ -24,7 +25,7 @@ export default function TablesSidebar({
                 <h2 class="text-xl font-semibold text-white mb-4">Database Tables</h2>
                 {loading && !selectedTable ? (
                     <div class="flex justify-center my-4">
-                        <div class="w-6 h-6 border-4 border-gray-600 border-t-blue-500 rounded-full animate-spin"></div>
+                        <LoadingSpinner size="sm" />
                     </div>
                 ) : db ? (
                     <div>

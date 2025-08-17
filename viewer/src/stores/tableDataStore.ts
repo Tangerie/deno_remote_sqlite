@@ -25,27 +25,6 @@ export const tableDataStore = createStore({
         totalPages: 0
     } as TableDataState,
     actions: {
-        setTableData(state, data: any[]) {
-            state.tableData = data;
-        },
-        setTableColumns(state, columns: string[]) {
-            state.tableColumns = columns;
-        },
-        setTableInfo(state, info: string) {
-            state.tableInfo = info;
-        },
-        setPageSize(state, size: number) {
-            state.pageSize = size;
-        },
-        setCurrentPage(state, page: number) {
-            state.currentPage = page;
-        },
-        setTotalRows(state, rows: number) {
-            state.totalRows = rows;
-        },
-        setTotalPages(state, pages: number) {
-            state.totalPages = pages;
-        },
         resetTableData(state) {
             state.tableData = [];
             state.tableColumns = [];
@@ -86,6 +65,13 @@ export const tableDataStore = createStore({
                 state.tableColumns = [];
                 throw err;
             }
+        },
+        async setCurrentPage(state, db: any, tableName: string, page: number, pageSize: number = state.pageSize, tables: any[] = []) {
+            state.currentPage = page;
+            await this.loadTableData(state, db, tableName, page, pageSize, tables);
+        },
+        setPageSize(state, size: number) {
+            state.pageSize = size;
         }
     }
 });
@@ -93,15 +79,10 @@ export const tableDataStore = createStore({
 export const useTableDataStore = createUseStore(tableDataStore);
 
 export const { 
-    setTableData,
-    setTableColumns,
-    setTableInfo,
-    setPageSize,
-    setCurrentPage,
-    setTotalRows,
-    setTotalPages,
     resetTableData,
-    loadTableData
+    loadTableData,
+    setCurrentPage,
+    setPageSize
 } = tableDataStore.actions;
 
 export const { get: getTableDataState } = tableDataStore;

@@ -53,10 +53,7 @@ export const databaseStore = createStore({
             state.tables = [];
             state.selectedTable = null;
         },
-        setTables(state, tables: TableInfo[]) {
-            state.tables = tables;
-        },
-        selectTable(state, tableName: string | null) {
+        async selectTable(state, tableName: string | null) {
             state.selectedTable = tableName;
         },
         setUrl(state, url: string) {
@@ -71,7 +68,6 @@ export const useDatabaseStore = createUseStore(databaseStore);
 export const { 
     openDb, 
     closeDb, 
-    setTables, 
     selectTable,
     setUrl
 } = databaseStore.actions;

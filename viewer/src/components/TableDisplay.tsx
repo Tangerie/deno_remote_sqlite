@@ -1,4 +1,6 @@
 import PaginationControls from './PaginationControls.tsx';
+import ErrorDisplay from './ErrorDisplay.tsx';
+import EmptyState from './EmptyState.tsx';
 
 interface TableDisplayProps {
     selectedTable: string | null;
@@ -155,16 +157,7 @@ export default function TableDisplay({
                         </div>
                     </div>
                 ) : error ? (
-                    <div class="bg-red-900 border-l-4 border-red-500 p-4 mb-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <div class="w-5 h-5 text-red-500">⚠</div>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm text-red-200">{error}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <ErrorDisplay error={error} />
                 ) : selectedTable ? (
                     <div>
                         {tableData.length > 0 ? (
@@ -203,17 +196,19 @@ export default function TableDisplay({
                                 </div>
                             </div>
                         ) : (
-                            <div class="text-center py-8 text-gray-400">
-                                <div class="text-4xl mb-2">📋</div>
-                                <p>No data found in table</p>
-                            </div>
+                            <EmptyState 
+                                icon="📋" 
+                                title="No Data Found" 
+                                description="No data found in this table" 
+                            />
                         )}
                     </div>
                 ) : (
-                    <div class="text-center py-8 text-gray-400">
-                        <div class="text-4xl mb-2">📋</div>
-                        <p>Select a table to view its data</p>
-                    </div>
+                    <EmptyState 
+                        icon="📋" 
+                        title="Select a Table" 
+                        description="Select a table to view its data" 
+                    />
                 )}
             </div>
         </div>

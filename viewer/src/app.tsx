@@ -16,6 +16,7 @@ import {
 import { 
     useTableDataStore,
     loadTableData as loadTableDataAction,
+    setCurrentPage,
     setPageSize
 } from './stores/tableDataStore.ts';
 import { 

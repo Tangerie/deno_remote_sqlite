@@ -2,6 +2,10 @@ import { useState } from 'preact/hooks';
 import { useDatabaseStore } from '../stores/databaseStore.ts';
 import { useUIStore } from '../stores/uiStore.ts';
 import ResultsTable from '../components/ResultsTable.tsx';
+import LoadingSpinner from '../components/LoadingSpinner.tsx';
+import ErrorDisplay from '../components/ErrorDisplay.tsx';
+import EmptyState from '../components/EmptyState.tsx';
+import Button from '../components/Button.tsx';
 
 export default function ExecuteSQL() {
     const { db } = useDatabaseStore(state => ({
@@ -62,38 +66,24 @@ export default function ExecuteSQL() {
                 />
                 
                 <div class="mt-3 flex justify-end">
-                    <button
+                    <Button
                         onClick={executeQuery}
                         disabled={loading || executing || !query.trim() || !db}
-                        class={`px-4 py-2 rounded-md font-medium transition duration-300 ${
-                            loading || executing || !query.trim() || !db
-                                ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                                : 'bg-blue-600 hover:bg-blue-700 text-white'
-                        }`}
+                        variant="primary"
+                        loading={executing}
                     >
-                        {executing ? 'Executing...' : 'Execute Query'}
-                    </button>
+                        Execute Query
+                    </Button>
                 </div>
             </div>
             
             {executing && (
                 <div class="flex justify-center items-center h-32">
-                    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                    <LoadingSpinner size="md" />
                 </div>
             )}
             
-            {error && (
-                <div class="bg-red-900 border-l-4 border-red-500 p-4 mb-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <div class="w-5 h-5 text-red-500">⚠</div>
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm text-red-200">{error}</p>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {error && <ErrorDisplay error={error} />}
             
             {results && (
                 <div class="mt-6">
@@ -103,10 +93,11 @@ export default function ExecuteSQL() {
             )}
             
             {!results && !error && !executing && (
-                <div class="text-center py-8 text-gray-400">
-                    <div class="text-4xl mb-2">▶️</div>
-                    <p>Enter a SQL query and click "Execute Query" to run it</p>
-                </div>
+                <EmptyState 
+                    icon="▶️" 
+                    title="Execute SQL Query" 
+                    description="Enter a SQL query and click &quot;Execute Query&quot; to run it" 
+                />
             )}
         </div>
     );

@@ -1,6 +1,8 @@
 import { useDatabaseStore } from '../stores/databaseStore.ts';
 import { useUIStore } from '../stores/uiStore.ts';
 import TableSchema from '../components/TableSchema.tsx';
+import LoadingSpinner from '../components/LoadingSpinner.tsx';
+import EmptyState from '../components/EmptyState.tsx';
 
 export default function ViewSchemas() {
     const { tables, selectedTable } = useDatabaseStore(state => ({
@@ -17,13 +19,14 @@ export default function ViewSchemas() {
             
             {loading ? (
                 <div class="flex justify-center items-center h-64">
-                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    <LoadingSpinner size="lg" />
                 </div>
             ) : tables.length === 0 ? (
-                <div class="text-center py-8 text-gray-400">
-                    <div class="text-4xl mb-2">📋</div>
-                    <p>No tables found. Connect to a database to view schemas.</p>
-                </div>
+                <EmptyState 
+                    icon="📋" 
+                    title="No Tables Found" 
+                    description="Connect to a database to view schemas." 
+                />
             ) : (
                 <div class="space-y-6">
                     {tables.map((table) => (
