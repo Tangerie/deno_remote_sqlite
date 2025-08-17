@@ -9,34 +9,25 @@ import ViewSchemas from './pages/ViewSchemas.tsx';
 import ExecuteSQL from './pages/ExecuteSQL.tsx';
 import { 
     useDatabaseStore, 
-    openDb, 
     closeDb, 
     selectTable 
 } from './stores/databaseStore.ts';
 import { 
     useTableDataStore,
     loadTableData as loadTableDataAction,
-    setCurrentPage,
     setPageSize
 } from './stores/tableDataStore.ts';
 import { 
-    useUIStore,
     setLoading,
     setError
 } from './stores/uiStore.ts';
 
 export default function App() {
-    const { db, tables, selectedTable, url } = useDatabaseStore(state => state);
-    const { 
-        tableData, 
-        tableColumns, 
-        tableInfo, 
-        currentPage, 
-        pageSize, 
-        totalRows, 
-        totalPages 
-    } = useTableDataStore(state => state);
-    const { loading, error } = useUIStore(state => state);
+    const db = useDatabaseStore(state => state.db);
+    const tables = useDatabaseStore(state => state.tables);
+    
+    const pageSize = useTableDataStore(state => state.pageSize);
+
 
     const loadTableData = async (tableName: string, page: number, newPageSize?: number) => {
         if (!db) return;
@@ -89,7 +80,7 @@ export default function App() {
                         <Router>
 
                             <Route 
-                                path="/browse" 
+                                path={`/browse`} 
                                 component={() => (
                                     <BrowseTables
                                         loadTableData={loadTableData}
@@ -97,13 +88,13 @@ export default function App() {
                                 )} 
                             />
                             <Route 
-                                path="/schema" 
+                                path={`/schema`} 
                                 component={() => (
                                     <ViewSchemas />
                                 )} 
                             />
                             <Route 
-                                path="/sql" 
+                                path={`/sql`} 
                                 component={() => (
                                     <ExecuteSQL />
                                 )} 

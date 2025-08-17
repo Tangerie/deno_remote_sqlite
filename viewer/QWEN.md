@@ -1,8 +1,3 @@
-# IMPORTANT
-- DO NOT RUN `npm`, `npx` OR `deno` COMMANDS.
-- A development server is already running, DO NOT start another.
-- ONLY IMPORT `RemoteDatabase` from `@tangerie/deno_remote_sqlite/client`
-
 # Project
 Create a preact app, using typescript, deno, vite and tailwindcss. It's a sqlite database viewer (allow user to browse tables), using `@tangerie/deno_remote_sqlite/client`.
 
@@ -67,9 +62,22 @@ Create a preact app, using typescript, deno, vite and tailwindcss. It's a sqlite
         ...
     })
     ```
+- When subscribing to values from a store (i.e. `useExampleStore(...)`), do not select the entire state as that will cause any change in the state to make the component re-render and potentially all children. Also do not subscribe to parts of the store that aren't required for the same reason.
+    ```tsx
+    // Instead of 
+    const { key, otherKey, someDeeplyNestedDict } = useExampleStore(state => state);
+
+    return <h1>{key} ({someDeeplyNestedDict.someKey})</h1>
+
+    // Do
+    const key = useExampleStore(state => state.key);
+    const someKeyFromNested = useExampleStore(state => state.someDeeplyNestedDict.someKey);
+
+    return <h1>{key} ({someKeyFromNested})</h1>
+    ```
 
 # IMPORTANT
 - DO NOT RUN `npm`, `npx` OR `deno` COMMANDS.
 - A development server is already running, DO NOT start another.
 - ONLY IMPORT `RemoteDatabase` from `@tangerie/deno_remote_sqlite/client`
-- ONLY IMPORT createUseStore locally
+- ONLY IMPORT `createUseStore` locally

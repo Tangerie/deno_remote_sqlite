@@ -20,6 +20,7 @@
   "nodeModulesDir": "auto",
   "compilerOptions": {
       "types": [
+          "preact",
           "vite/client"
       ],
       "lib": [
@@ -29,12 +30,12 @@
           "ES2020"
       ],
       "jsx": "react-jsx",
-      "jsxImportSource": "preact"
-      
+      "jsxImportSource": "preact",
+      "useUnknownInCatchVariables": false
   },
   "exclude": [
-    "**/.vite/",
-    "**/node_modules/",
+    "./.vite/",
+    "./node_modules/",
     "./dist",
     "./vite.config.ts"
   ]

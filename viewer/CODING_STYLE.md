@@ -14,7 +14,7 @@ This document outlines general coding style and conventions for TypeScript Preac
 ### Component Organization
 
 1. Components are defined as functional components using TypeScript
-2. Each component is in its own file with a `.tsx` extension
+2. Each component is in its own file with a `.tsx` extension (except if it's a small specific component only for use within this file)
 3. Components are exported as default exports
 4. Props are defined using TypeScript interfaces
 5. Complex props are defined in a separate `Props` interface at the top of the file
@@ -54,6 +54,7 @@ src/
 ├── index.tsx        # Entry point
 └── ...
 ```
+- Use subfolders underneath each of these folders to group components
 
 ## TypeScript Conventions
 
@@ -215,10 +216,12 @@ const [state, setState] = useState<State>({ status: 'loading' });
 - Use trailing commas in multi-line objects and arrays
 - Use semicolons at the end of statements
 - Be consistent with spacing around operators and braces
+    - A single space between operators
+    - No space between () or []
+    - One space between { }
 
 ### Comments
 
-- Use JSDoc-style comments for functions and components when they provide value
 - Inline comments should explain "why" rather than "what"
 - Remove commented-out code before committing
 - Use TODO comments sparingly and with context

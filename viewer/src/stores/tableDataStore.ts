@@ -5,7 +5,7 @@ import {
 } from '../modules/storeUtils.ts';
 
 interface TableDataState {
-    tableData: any[];
+    tableData: unknown[];
     tableColumns: string[];
     tableInfo: string;
     currentPage: number;

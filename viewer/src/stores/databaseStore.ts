@@ -24,17 +24,12 @@ export const databaseStore = createStore({
         url: loadUrlFromStorage()
     } as DatabaseState,
     actions: {
-        async openDb(state, url: string) {
+        async openDb(state) {
             try {
                 if (state.db) {
                     state.db.close();
                 }
-                
-                const database = await connectToDatabase(url);
-                
-                state.db = database;
-                state.url = url;
-                saveUrlToStorage(url);
+                state.db = new RemoteDatabase(state.url);
                 
                 // Load tables after connecting
                 const tableInfo = await loadTables(database);
@@ -53,7 +48,7 @@ export const databaseStore = createStore({
             state.tables = [];
             state.selectedTable = null;
         },
-        async selectTable(state, tableName: string | null) {
+        selectTable(state, tableName: string | null) {
             state.selectedTable = tableName;
         },
         setUrl(state, url: string) {
