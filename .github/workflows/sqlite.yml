@@ -29,32 +29,33 @@ jobs:
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          choco install sqlite curl cjson -y
+          choco install sqlite curl -y
 
       - name: Install dependencies (Linux cross-compilers)
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc make pkg-config libsqlite3-dev libcurl4-openssl-dev libcjson-dev \
+          sudo apt-get install -y gcc make pkg-config libsqlite3-dev libcurl4-openssl-dev \
             gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu
 
       - name: Build on Windows
         if: matrix.os == 'windows-latest'
         run: |
-          cl /LD extension\remote_table.c /I "C:\Program Files\SQLite\include" ^
-             /link /OUT:${{ matrix.artifact }} sqlite3.lib libcurl.lib cjson.lib
+          cl /LD extension\remote_table.c extension\cJSON.c ^
+             /I "extension" /I "C:\Program Files\SQLite\include" ^
+             /link /OUT:${{ matrix.artifact }} sqlite3.lib libcurl.lib
 
       - name: Build for Raspberry Pi (armhf)
         if: matrix.arch == 'armhf'
         run: |
-          arm-linux-gnueabihf-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c \
-            $(pkg-config --cflags --libs sqlite3 libcurl cjson)
+          arm-linux-gnueabihf-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c extension/cJSON.c \
+            -Iextension $(pkg-config --cflags --libs sqlite3 libcurl)
 
       - name: Build for Raspberry Pi (arm64)
         if: matrix.arch == 'arm64'
         run: |
-          aarch64-linux-gnu-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c \
-            $(pkg-config --cflags --libs sqlite3 libcurl cjson)
+          aarch64-linux-gnu-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c extension/cJSON.c \
+            -Iextension $(pkg-config --cflags --libs sqlite3 libcurl)
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
