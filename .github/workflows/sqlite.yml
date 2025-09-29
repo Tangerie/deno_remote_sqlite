@@ -44,12 +44,6 @@ jobs:
           sudo apt-get install -y gcc make pkg-config libsqlite3-dev libcurl4-openssl-dev \
             gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu ccache
 
-      - name: MSVC Enable (Windows)
-        if: matrix.os == 'windows-latest'
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.arch }}
-
       # ----------------------
       # Windows caching
       # ----------------------
@@ -62,19 +56,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-choco-
 
-      - name: Install dependencies (Windows)
+      - name: Install dependencies (Windows MinGW)
         if: matrix.os == 'windows-latest'
         run: |
-          choco install sqlite curl -y
+          choco install mingw sqlite curl -y
+          echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" >> $GITHUB_PATH
+
       # ----------------------
       # Build steps
       # ----------------------
-      - name: Build on Windows
+      - name: Build on Windows (MinGW)
         if: matrix.os == 'windows-latest'
         run: |
-          cl /LD extension\remote_table.c extension\cJSON.c ^
-             /I "extension" /I "C:\Program Files\SQLite\include" ^
-             /link /OUT:${{ matrix.artifact }} sqlite3.lib libcurl.lib
+          gcc -shared -o ${{ matrix.artifact }} extension/remote_table.c extension/cJSON.c ^
+            -Iextension ^
+            -IC:/ProgramData/chocolatey/lib/sqlite/tools/sqlite3/include ^
+            -LC:/ProgramData/chocolatey/lib/sqlite/tools/sqlite3 ^
+            -lsqlite3 -lcurl
 
       - name: Build for Raspberry Pi (arm64)
         if: matrix.arch == 'arm64'
