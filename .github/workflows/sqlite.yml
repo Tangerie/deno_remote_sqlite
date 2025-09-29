@@ -3,7 +3,6 @@ name: Build SQLite Remote Table Extension
 on:
   push:
     branches: [ main ]
-  pull_request:
 
 jobs:
   build:
@@ -12,9 +11,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-latest
-            arch: x64
-            artifact: remotetable.dll
+          # - os: windows-latest
+          #   arch: x64
+          #   artifact: remotetable.dll
           - os: ubuntu-latest
             arch: arm64
             artifact: remotetable_arm64.so
@@ -68,11 +67,7 @@ jobs:
       - name: Build on Windows (MinGW)
         if: matrix.os == 'windows-latest'
         run: |
-          gcc -shared -o ${{ matrix.artifact }} extension/remote_table.c extension/cJSON.c ^
-            -Iextension ^
-            -IC:/ProgramData/chocolatey/lib/sqlite/tools/sqlite3/include ^
-            -LC:/ProgramData/chocolatey/lib/sqlite/tools/sqlite3 ^
-            -lsqlite3 -lcurl
+          gcc -shared -o ${{ matrix.artifact }} extension/remote_table.c extension/cJSON.c -Iextension -IC:/ProgramData/chocolatey/lib/sqlite/tools/sqlite3/include -IC:/ProgramData/chocolatey/lib/curl/include -LC:/ProgramData/chocolatey/lib/sqlite/tools/sqlite3 -LC:/ProgramData/chocolatey/lib/curl/lib -lsqlite3 -lcurl
 
       - name: Build for Raspberry Pi (arm64)
         if: matrix.arch == 'arm64'
