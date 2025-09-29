@@ -1,0 +1,63 @@
+name: Build SQLite Remote Table Extension
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }} / ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            arch: x64
+            artifact: remotetable.dll
+          - os: ubuntu-latest
+            arch: armhf
+            artifact: remotetable_armhf.so
+          - os: ubuntu-latest
+            arch: arm64
+            artifact: remotetable_arm64.so
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install sqlite curl cjson -y
+
+      - name: Install dependencies (Linux cross-compilers)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc make pkg-config libsqlite3-dev libcurl4-openssl-dev libcjson-dev \
+            gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu
+
+      - name: Build on Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          cl /LD extension\remote_table.c /I "C:\Program Files\SQLite\include" ^
+             /link /OUT:${{ matrix.artifact }} sqlite3.lib libcurl.lib cjson.lib
+
+      - name: Build for Raspberry Pi (armhf)
+        if: matrix.arch == 'armhf'
+        run: |
+          arm-linux-gnueabihf-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c \
+            $(pkg-config --cflags --libs sqlite3 libcurl cjson)
+
+      - name: Build for Raspberry Pi (arm64)
+        if: matrix.arch == 'arm64'
+        run: |
+          aarch64-linux-gnu-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c \
+            $(pkg-config --cflags --libs sqlite3 libcurl cjson)
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}

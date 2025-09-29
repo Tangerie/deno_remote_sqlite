@@ -19,6 +19,7 @@
     "exclude": [
       "examples/**/*",
       ".cache",
+      "extension/**/*",
       "**/*.test.ts",
       "*.sqlite3"
     ]
