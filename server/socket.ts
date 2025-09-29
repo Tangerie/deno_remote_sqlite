@@ -64,9 +64,8 @@ export class DatabaseSocketHandler {
             this.respond(msg.id, handle);
         } else if(msg.type === "run") {
             const [statementStr, ...params] = msg.payload as [string, ...Parameters<Statement["all"]>]
-            const stmt = this.db.prepare(statementStr);
+            using stmt = this.db.prepare(statementStr);
             const results = stmt.all(...params);
-            stmt.finalize();
             this.respond(msg.id, results);
         } else if(msg.type === "prepare.get") {
             const { handle, args } = msg.payload as { handle: RemoteStatementHandle, args: Parameters<Statement["get"]> }
@@ -113,6 +112,10 @@ export class DatabaseSocketHandler {
     }
 
     onClose() {
-        this.db.close()
+        for(const stmt of this.statements.values()) {
+            stmt.finalize();
+        }
+        
+        this.db.close();
     }
 }

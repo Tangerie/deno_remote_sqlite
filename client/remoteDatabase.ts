@@ -24,18 +24,20 @@ interface OutgoingMessage extends Message {
 
 type RemoteStatementHandle = number;
 
-export class RemoteStatement {
-    private origin : RemoteDatabase;
+export class RemoteStatement implements AsyncDisposable {
+    private sendAndWait : RemoteDatabase["sendAndWait"];
     private handle : RemoteStatementHandle;
     private isDone = false;
-    constructor(origin : RemoteDatabase, handle : RemoteStatementHandle) {
-        this.origin = origin;
+
+    constructor(sendAndWait : RemoteDatabase["sendAndWait"], handle : RemoteStatementHandle) {
+        this.sendAndWait = sendAndWait;
         this.handle = handle;
     }
 
     public async get<R extends object = {}>(...params : Parameters<Statement["get"]>) : Promise<R | undefined> {
         if(this.isDone) throw new Error("Statement has been disposed")
-        return await this.origin.sendAndWait({
+        
+        return await this.sendAndWait({
             type: "prepare.get",
             payload: {
                 handle: this.handle,
@@ -46,7 +48,7 @@ export class RemoteStatement {
 
     public async all<R extends object = {}>(...params : Parameters<Statement["all"]>) : Promise<R[]> {
         if(this.isDone) throw new Error("Statement has been disposed")
-        return await this.origin.sendAndWait({
+        return await this.sendAndWait({
             type: "prepare.all",
             payload: {
                 handle: this.handle,
@@ -58,14 +60,18 @@ export class RemoteStatement {
     public async finalize() {
         if(this.isDone) throw new Error("Statement has been disposed");
         this.isDone = true;
-        await this.origin.sendAndWait({
+        await this.sendAndWait({
             type: "prepare.finalize",
             payload: this.handle
         })
     }
+
+    async [Symbol.asyncDispose]() {
+        await this.finalize();
+    }
 }
 
-export class RemoteDatabase {
+export class RemoteDatabase implements Disposable {
     private nextId: number = 0;
     private socket : WebSocket;
     private waitingCallbacks = new Map<number, (data : unknown, error : boolean) => void>();
@@ -84,7 +90,7 @@ export class RemoteDatabase {
         else if(this.socket.readyState !== WebSocket.CONNECTING) {
             throw new Error("Failed to open");
         }
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.socket.onopen = () => { resolve(undefined) };
         })
     }
@@ -92,10 +98,12 @@ export class RemoteDatabase {
     private onMessage(msg : IncomingMessage) {
         if(msg.type === "error") {
             const waiting = this.waitingCallbacks.get(msg.id);
+            
             if(!waiting) {
                 console.error("Recieved Uknown Response");
                 return;
             }
+
             waiting(msg.payload, true);
             this.waitingCallbacks.delete(msg.id);
             console.error("Last Outgoing Message", this._lastSendDbg);
@@ -139,7 +147,7 @@ export class RemoteDatabase {
 
     public async prepare(statement: string): Promise<RemoteStatement> {
         const handleId = await this.sendCall<RemoteStatementHandle>("prepare", statement);
-        return new RemoteStatement(this, handleId);
+        return new RemoteStatement(this.sendAndWait.bind(this), handleId);
     }
 
     public run<T extends object = {}>(statement : string, ...params : Parameters<Statement["all"]>) : Promise<T[]> {
@@ -148,5 +156,9 @@ export class RemoteDatabase {
 
     public close() {
         this.socket.close();
+    }
+
+    [Symbol.dispose]() {
+        this.close();
     }
 }

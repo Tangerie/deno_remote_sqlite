@@ -2,19 +2,17 @@ if (!import.meta.main) {
   throw new Error("This is to be run, not imported")
 }
 
-import { Application, Router, type Context } from "jsr:@oak/oak@^17.1.3"
-import { DatabaseSocketHandler } from "../server/mod.ts";
+import { Application, Router } from "@oak/oak"
+import { createRemoteSQliteRouter } from "../server/oak.ts";
 
 const app = new Application();
 const port = 8090;
 const router = new Router();
 
-router.get("/socket", async (ctx : Context) => {
-  new DatabaseSocketHandler(await ctx.upgrade(), {
+router.use("/sql", createRemoteSQliteRouter({
     readonly: true,
     path: "./exampledb.sqlite3"
-  })
-});
+}).routes());
 
 app.use(router.routes());
 app.use(router.allowedMethods());
