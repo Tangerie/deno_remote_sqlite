@@ -1,5 +1,5 @@
 // remote_table.c - Simplified SQLite Extension for Remote Virtual Tables
-#include <sqlite3ext.h>
+#include "sqlite3ext.h"
 SQLITE_EXTENSION_INIT1
 
 #include <stdio.h>
