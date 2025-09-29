@@ -7,7 +7,7 @@ SQLITE_EXTENSION_INIT1
 #include <string.h>
 #include <ctype.h>
 #include <curl/curl.h>
-#include <cjson/cJSON.h>
+#include "cJSON.h"
 
 /* Virtual table structure */
 typedef struct remote_table {
