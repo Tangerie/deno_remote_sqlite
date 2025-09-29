@@ -41,7 +41,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc make pkg-config libsqlite3-dev libcurl4-openssl-dev \
-            gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu ccache
+            gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu ccache \
+            g++-aarch64-linux-gnu libc6-dev-arm64-cross
 
       # ----------------------
       # Windows caching
@@ -72,7 +73,7 @@ jobs:
       - name: Build for Raspberry Pi (arm64)
         if: matrix.arch == 'arm64'
         run: |
-          aarch64-linux-gnu-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c extension/cJSON.c \
+          aarch64-linux-gnu-gcc -fPIC -shared -o remotetable_arm64.so extension/remote_table.c extension/cJSON.c \
             -Iextension $(pkg-config --cflags --libs sqlite3 libcurl)
 
       # ----------------------
