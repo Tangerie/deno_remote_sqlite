@@ -16,9 +16,6 @@ jobs:
             arch: x64
             artifact: remotetable.dll
           - os: ubuntu-latest
-            arch: armhf
-            artifact: remotetable_armhf.so
-          - os: ubuntu-latest
             arch: arm64
             artifact: remotetable_arm64.so
 
@@ -26,18 +23,47 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install sqlite curl -y
+      # ----------------------
+      # Linux caching
+      # ----------------------
+      - name: Cache APT packages
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/cache@v4
+        with:
+          path: |
+            /var/cache/apt
+            /var/lib/apt/lists
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/extension/*.c', '**/extension/*.h') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
 
       - name: Install dependencies (Linux cross-compilers)
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc make pkg-config libsqlite3-dev libcurl4-openssl-dev \
-            gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu
+            gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu ccache
 
+      # ----------------------
+      # Windows caching
+      # ----------------------
+      - name: Cache Chocolatey packages
+        if: matrix.os == 'windows-latest'
+        uses: actions/cache@v4
+        with:
+          path: C:\ProgramData\chocolatey\lib
+          key: ${{ runner.os }}-choco-${{ hashFiles('**/extension/*.c', '**/extension/*.h') }}
+          restore-keys: |
+            ${{ runner.os }}-choco-
+
+      - name: Install dependencies (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install sqlite curl -y
+
+      # ----------------------
+      # Build steps
+      # ----------------------
       - name: Build on Windows
         if: matrix.os == 'windows-latest'
         run: |
@@ -45,18 +71,15 @@ jobs:
              /I "extension" /I "C:\Program Files\SQLite\include" ^
              /link /OUT:${{ matrix.artifact }} sqlite3.lib libcurl.lib
 
-      - name: Build for Raspberry Pi (armhf)
-        if: matrix.arch == 'armhf'
-        run: |
-          arm-linux-gnueabihf-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c extension/cJSON.c \
-            -Iextension $(pkg-config --cflags --libs sqlite3 libcurl)
-
       - name: Build for Raspberry Pi (arm64)
         if: matrix.arch == 'arm64'
         run: |
           aarch64-linux-gnu-gcc -fPIC -shared -o ${{ matrix.artifact }} extension/remote_table.c extension/cJSON.c \
             -Iextension $(pkg-config --cflags --libs sqlite3 libcurl)
 
+      # ----------------------
+      # Upload artifacts
+      # ----------------------
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
