@@ -35,7 +35,7 @@ export class RemoteStatement implements AsyncDisposable {
     }
 
     public async get<R extends object = {}>(...params : Parameters<Statement["get"]>) : Promise<R | undefined> {
-        if(this.isDone) throw new Error("Statement has been disposed")
+        if(this.isDone) throw new Error("Statement has been disposed");
         
         return await this.sendAndWait({
             type: "prepare.get",
@@ -47,7 +47,8 @@ export class RemoteStatement implements AsyncDisposable {
     }
 
     public async all<R extends object = {}>(...params : Parameters<Statement["all"]>) : Promise<R[]> {
-        if(this.isDone) throw new Error("Statement has been disposed")
+        if(this.isDone) throw new Error("Statement has been disposed");
+
         return await this.sendAndWait({
             type: "prepare.all",
             payload: {
@@ -58,7 +59,7 @@ export class RemoteStatement implements AsyncDisposable {
     }
 
     public async finalize() {
-        if(this.isDone) throw new Error("Statement has been disposed");
+        if(this.isDone) return;
         this.isDone = true;
         await this.sendAndWait({
             type: "prepare.finalize",
