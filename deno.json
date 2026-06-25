@@ -1,6 +1,6 @@
 {
   "name": "@tangerie/remote-sqlite",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "tasks": {
     "dry": "deno publish --dry-run --allow-dirty",
     "test": "deno test -A --unstable-ffi"

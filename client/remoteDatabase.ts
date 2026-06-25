@@ -76,45 +76,67 @@ export class RemoteDatabase implements Disposable {
     private nextId: number = 0;
     private socket : WebSocket;
     private waitingCallbacks = new Map<number, (data : unknown, error : boolean) => void>();
+    private closed = false;
+    private openPromise : Promise<undefined>;
 
     private _lastSendDbg? : OutgoingMessage = undefined;
 
     constructor(url : string) {
         this.socket = new WebSocket(url);
+
+        this.openPromise = new Promise<undefined>((resolve, reject) => {
+            if(this.socket.readyState === WebSocket.OPEN) return resolve(undefined);
+            this.socket.addEventListener("open", () => resolve(undefined), { once: true });
+            this.socket.addEventListener("error", () => reject(new Error("Failed to connect")), { once: true });
+        });
+        
+        // Avoid an unhandled rejection if the caller never awaits open().
+        // Callers that do await open() still observe the rejection.
+        this.openPromise.catch(() => {});
+
         this.socket.onmessage = (ev) => {
-            this.onMessage(JSON.parse(ev.data));
-        }
+            let msg : IncomingMessage;
+            try {
+                msg = JSON.parse(ev.data);
+            } catch {
+                console.error("Received malformed message", ev.data);
+                return;
+            }
+            this.onMessage(msg);
+        };
+
+        this.socket.onerror = () => this.failAll(new Error("Socket error"));
+        this.socket.onclose = () => this.failAll(new Error("Socket closed"));
     }
 
     public open(): Promise<undefined> {
-        if(this.socket.readyState === WebSocket.OPEN) return Promise.resolve(undefined);
-        else if(this.socket.readyState !== WebSocket.CONNECTING) {
-            throw new Error("Failed to open");
+        return this.openPromise;
+    }
+
+    private failAll(err : Error) {
+        this.closed = true;
+        if(this.waitingCallbacks.size === 0) return;
+        for(const callback of this.waitingCallbacks.values()) {
+            callback(err, true);
         }
-        return new Promise((resolve) => {
-            this.socket.onopen = () => { resolve(undefined) };
-        })
+        this.waitingCallbacks.clear();
     }
 
     private onMessage(msg : IncomingMessage) {
         if(msg.type === "error") {
             const waiting = this.waitingCallbacks.get(msg.id);
-            
             if(!waiting) {
-                console.error("Recieved Uknown Response");
+                console.error("Received unknown response", msg);
                 return;
             }
-
             waiting(msg.payload, true);
             this.waitingCallbacks.delete(msg.id);
-            console.error("Last Outgoing Message", this._lastSendDbg);
-            throw new Error(`${msg.payload}`);
         }
 
         if(msg.type === "respond") {
             const waiting = this.waitingCallbacks.get(msg.id);
             if(!waiting) {
-                console.error("Recieved Uknown Response");
+                console.error("Received unknown response", msg);
                 return;
             }
             waiting(msg.payload, false);
@@ -128,14 +150,16 @@ export class RemoteDatabase implements Disposable {
     }
 
     public sendAndWait<R extends unknown>(msg : Omit<OutgoingMessage, "id">) : Promise<R> {
+        if(this.closed || this.socket.readyState >= WebSocket.CLOSING) {
+            return Promise.reject(new Error("Connection is closed"));
+        }
         const id = this.nextId++;
-        this.send({ id, ...msg });
-        return new Promise((resolve, reject) => {
-            const callBack = (data : unknown, error: boolean) => {
+        return new Promise<R>((resolve, reject) => {
+            this.waitingCallbacks.set(id, (data, error) => {
                 if(error) reject(data);
                 else resolve(data as R);
-            };
-            this.waitingCallbacks.set(id, callBack);
+            });
+            this.send({ id, ...msg });
         });
     }
 
@@ -156,6 +180,7 @@ export class RemoteDatabase implements Disposable {
     }
 
     public close() {
+        this.closed = true;
         this.socket.close();
     }
 

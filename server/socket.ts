@@ -36,7 +36,13 @@ export class DatabaseSocketHandler {
         this.socket = socket;
         this.socket.onopen = () => this.onOpen();
         this.socket.onmessage = ev => {
-            const msg = JSON.parse(ev.data);
+            let msg : IncomingMessage;
+            try {
+                msg = JSON.parse(ev.data);
+            } catch {
+                console.error("Received malformed message", ev.data);
+                return;
+            }
             try {
                 this.onMessage(msg);
             } catch(err) {

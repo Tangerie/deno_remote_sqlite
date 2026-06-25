@@ -5,7 +5,7 @@ if (!import.meta.main) {
 }
 
 
-const db = new RemoteDatabase("ws://localhost:8090/socket");
+const db = new RemoteDatabase("ws://localhost:8090/sql");
 await db.open();
 const stmt = await db.prepare<{ id : number }>("SELECT * FROM albums")
 console.log(await stmt.get());
