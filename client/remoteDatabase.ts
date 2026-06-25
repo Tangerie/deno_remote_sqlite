@@ -24,7 +24,7 @@ interface OutgoingMessage extends Message {
 
 type RemoteStatementHandle = number;
 
-export class RemoteStatement implements AsyncDisposable {
+export class RemoteStatement<T extends object = {}> implements AsyncDisposable {
     private sendAndWait : RemoteDatabase["sendAndWait"];
     private handle : RemoteStatementHandle;
     private isDone = false;
@@ -34,7 +34,7 @@ export class RemoteStatement implements AsyncDisposable {
         this.handle = handle;
     }
 
-    public async get<R extends object = {}>(...params : Parameters<Statement["get"]>) : Promise<R | undefined> {
+    public async get<R extends object = T>(...params : Parameters<Statement["get"]>) : Promise<R | undefined> {
         if(this.isDone) throw new Error("Statement has been disposed");
         
         return await this.sendAndWait({
@@ -46,7 +46,7 @@ export class RemoteStatement implements AsyncDisposable {
         })
     }
 
-    public async all<R extends object = {}>(...params : Parameters<Statement["all"]>) : Promise<R[]> {
+    public async all<R extends object = T>(...params : Parameters<Statement["all"]>) : Promise<R[]> {
         if(this.isDone) throw new Error("Statement has been disposed");
 
         return await this.sendAndWait({
@@ -146,7 +146,7 @@ export class RemoteDatabase implements Disposable {
         })
     }
 
-    public async prepare(statement: string): Promise<RemoteStatement> {
+    public async prepare<T extends object = {}>(statement: string): Promise<RemoteStatement<T>> {
         const handleId = await this.sendCall<RemoteStatementHandle>("prepare", statement);
         return new RemoteStatement(this.sendAndWait.bind(this), handleId);
     }
