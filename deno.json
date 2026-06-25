@@ -11,8 +11,8 @@
   },
   "imports": {
     "@db/sqlite": "jsr:@db/sqlite@^0.13.0",
-    "@oak/oak": "jsr:@oak/oak@^17.1.6",
-    "@std/path": "jsr:@std/path@^1.1.2"
+    "@oak/oak": "jsr:@oak/oak@^17.2.0",
+    "@std/path": "jsr:@std/path@^1.1.5"
   },
   "license": "MIT",
   "publish": {
