@@ -179,7 +179,7 @@ export class RemoteDatabase implements Disposable {
         return this.sendCall<T[]>("run", statement, ...params);
     }
 
-    public sql<T extends object = {}>(strings: TemplateStringsArray, ...parameters: RestBindParameters) {
+    public sql<T extends object = {}>(strings: TemplateStringsArray, ...parameters: RestBindParameters) : Promise<T[]> {
         const sql = strings.join("?");
         return this.run<T>(sql, ...parameters);
     }
