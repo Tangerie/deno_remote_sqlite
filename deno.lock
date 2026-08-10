@@ -16,9 +16,10 @@
     "jsr:@std/http@1": "1.1.1",
     "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/media-types@1": "1.1.0",
-    "jsr:@std/path@1": "1.1.5",
+    "jsr:@std/path@1": "1.1.6",
     "jsr:@std/path@1.0": "1.0.9",
-    "jsr:@std/path@^1.1.5": "1.1.5",
+    "jsr:@std/path@^1.1.5": "1.1.6",
+    "jsr:@std/path@^1.1.6": "1.1.6",
     "npm:@types/node@*": "24.2.0",
     "npm:create-vite@*": "7.1.1",
     "npm:immer@^10.1.1": "10.1.1",
@@ -129,8 +130,8 @@
     "@std/path@1.1.2": {
       "integrity": "c0b13b97dfe06546d5e16bf3966b1cadf92e1cc83e56ba5476ad8b498d9e3038"
     },
-    "@std/path@1.1.5": {
-      "integrity": "ccea00982ea28c36becaf6e62f855406c76a8c32d462f66f415bbb7d83a271bc",
+    "@std/path@1.1.6": {
+      "integrity": "c68485c2a4dfbb5ae3cc74fae4e8c4e5d874cf8a8ed12927917235c758b46cbe",
       "dependencies": [
         "jsr:@std/internal"
       ]
@@ -164,7 +165,7 @@
     "dependencies": [
       "jsr:@db/sqlite@0.13",
       "jsr:@oak/oak@^17.2.0",
-      "jsr:@std/path@^1.1.5"
+      "jsr:@std/path@^1.1.6"
     ]
   }
 }

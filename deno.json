@@ -1,6 +1,6 @@
 {
   "name": "@tangerie/remote-sqlite",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "tasks": {
     "dry": "deno publish --dry-run --allow-dirty",
     "test": "deno test -A --unstable-ffi"
@@ -12,7 +12,7 @@
   "imports": {
     "@db/sqlite": "jsr:@db/sqlite@^0.13.0",
     "@oak/oak": "jsr:@oak/oak@^17.2.0",
-    "@std/path": "jsr:@std/path@^1.1.5"
+    "@std/path": "jsr:@std/path@^1.1.6"
   },
   "license": "MIT",
   "publish": {
