@@ -1,7 +1,7 @@
 import { openDb, type DatabaseConfig } from "./db.ts";
 import type { Database, Statement } from "@db/sqlite";
 
-const INCOMING_MESSAGE_TYPES = ["prepare", "run", "prepare.all", "prepare.get", "prepare.finalize"] as const;
+const INCOMING_MESSAGE_TYPES = ["prepare", "run", "exec", "prepare.all", "prepare.get", "prepare.finalize"] as const;
 const OUTGOING_MESSAGE_TYPES = ["respond", "error"] as const;
 
 type IncomingMessageType = (typeof INCOMING_MESSAGE_TYPES)[number];
@@ -73,11 +73,15 @@ export class DatabaseSocketHandler {
             using stmt = this.db.prepare(statementStr);
             const results = stmt.all(...params);
             this.respond(msg.id, results);
+        } else if(msg.type === "exec") {
+            const [statementStr, ...params] = msg.payload as [string, ...Parameters<Statement["all"]>];
+            const result = this.db.exec(statementStr, ...params);
+            this.respond(msg.id, result);
         } else if(msg.type === "prepare.get") {
             const { handle, args } = msg.payload as { handle: RemoteStatementHandle, args: Parameters<Statement["get"]> }
             const stmt = this.statements.get(handle);
             if(!stmt) {
-                return this.error(msg.id, "Invalid Handle")
+                return this.error(msg.id, "Invalid Handle");
             }
             const result = stmt.get(...args);
             this.respond(msg.id, result);
@@ -85,7 +89,7 @@ export class DatabaseSocketHandler {
             const { handle, args } = msg.payload as { handle: RemoteStatementHandle, args: Parameters<Statement["all"]> }
             const stmt = this.statements.get(handle);
             if(!stmt) {
-                return this.error(msg.id, "Invalid Handle")
+                return this.error(msg.id, "Invalid Handle");
             }
             const results = stmt.all(...args);
             this.respond(msg.id, results);
@@ -93,7 +97,7 @@ export class DatabaseSocketHandler {
             const handle = msg.payload as RemoteStatementHandle;
             const stmt = this.statements.get(handle);
             if(!stmt) {
-                return this.error(msg.id, "Invalid Handle")
+                return this.error(msg.id, "Invalid Handle");
             }
             stmt.finalize();
             this.statements.delete(handle);

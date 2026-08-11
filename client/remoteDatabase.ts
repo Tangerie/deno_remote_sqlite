@@ -1,6 +1,6 @@
 import type { RestBindParameters, Statement } from "@db/sqlite";
 
-const OUTGOING_MESSAGE_TYPES = ["prepare", "run", "prepare.all", "prepare.get", "prepare.finalize"] as const;
+const OUTGOING_MESSAGE_TYPES = ["prepare", "run", "exec", "prepare.all", "prepare.get", "prepare.finalize"] as const;
 const INCOMING_MESSAGE_TYPES = ["respond", "error"] as const;
 
 type IncomingMessageType = (typeof INCOMING_MESSAGE_TYPES)[number];
@@ -177,6 +177,10 @@ export class RemoteDatabase implements Disposable {
 
     public run<T extends object = {}>(statement : string, ...params : Parameters<Statement["all"]>) : Promise<T[]> {
         return this.sendCall<T[]>("run", statement, ...params);
+    }
+
+    public exec(statement : string, ...params : Parameters<Statement["all"]>) : Promise<number> {
+        return this.sendCall<number>("exec", statement, ...params);
     }
 
     public sql<T extends object = {}>(strings: TemplateStringsArray, ...parameters: RestBindParameters) : Promise<T[]> {
